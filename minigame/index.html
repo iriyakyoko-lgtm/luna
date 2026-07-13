@@ -557,6 +557,8 @@ const CAPS=[
   {full:'../ball_sr.png', top:'../ball_sr_top.png', bot:'../ball_sr_bot.png', w:320, h:361}
 ];
 const GNAMES=['일반','고급','희귀'];
+/* 뽑기알 이미지 미리 로드 */
+CAPS.forEach(c=>{ [c.full,c.top,c.bot].forEach(u=>{ const im=new Image(); im.src=u; }); });
 let gcPhase='setup', GC=null, gcBusy=false;
 function gcHint(){
   if(!GC){ $('gc-hint').textContent=''; return; }
@@ -603,7 +605,14 @@ function gcSpin(){
     const wrap=$('gc-ballwrap');
     const ball=document.createElement('div');
     ball.className='gc-ball pop';
-    ball.innerHTML='<img class="full" src="'+design.full+'" width="100%" alt="">';
+    /* 처음부터 반쪽 2장으로 조립 → 나중에 이미지 갈아끼우지 않음 (깜빡임 방지) */
+    const ratio=design.h/design.w;
+    ball.innerHTML=
+      '<div style="position:relative; width:100%; padding-top:'+(ratio*100)+'%;">'
+      +'<img class="half h-top" src="'+design.top+'" alt="">'
+      +'<img class="half h-bot" src="'+design.bot+'" alt="">'
+      +'<div class="prize g'+gr+'"><span class="pt">'+label+'</span></div>'
+      +'</div>';
     wrap.appendChild(ball);
     setTimeout(()=>{
       ball.classList.remove('pop'); ball.classList.add('grow');
@@ -615,14 +624,7 @@ function gcSpin(){
         ball.style.transform='translateX(-50%) translateY(0) scale(1)';
       });
       setTimeout(()=>{
-        const ratio=design.h/design.w;
-        ball.innerHTML=
-          '<div style="position:relative; width:100%; padding-top:'+(ratio*100)+'%;">'
-          +'<img class="half h-top" src="'+design.top+'" alt="">'
-          +'<img class="half h-bot" src="'+design.bot+'" alt="">'
-          +'<div class="prize g'+gr+'"><span class="pt">'+label+'</span></div>'
-          +'</div>';
-        requestAnimationFrame(()=>requestAnimationFrame(()=>ball.classList.add('open')));
+        ball.classList.add('open');
         const log=document.createElement('div');
         log.textContent=GC.drawn+'번째 뽑기  →  ['+GNAMES[gr]+'] '+GC.prizes[gr];
         log.style.borderLeft='4.5px solid '+(gr===2?'#E0A93B':gr===1?'#6A6FE0':'#A8ADEE');
