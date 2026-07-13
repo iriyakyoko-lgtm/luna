@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>루나 RUNA · Official</title>
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/lt/ltg8022/ltg8022.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --main:#6A6FE0; --main-dark:#3B3FA8; --main-light:#DDDEFA; --bg:#F4F4FD;
+  --paper:#FFFFFF; --ink:#1B1B3A; --ink-soft:#4A4E85;
+
+  --char:url('haessal.png');}
+body.dark{
+  --paper:#0B0C22; --ink:#E9EAFF; --ink-soft:#A6AAD8;
+  --bg:#0B0C22; --main-light:#2E3268; --main-dark:#C3C7FF;   /* 로더 커버·모달용(§6·§9) */
+}
+body{transition:background-color .3s}
+body.dark .mbox{background:#171A3C; color:#E9EAFF}
+body.dark .mbox textarea{background:#0B0C22; color:#E9EAFF; border-color:#2E3268}
+body.dark .mbox .close{background:#0B0C22; color:#E9EAFF}
+.theme-switch{flex-shrink:0; margin-left:10px; position:relative; width:22px; height:33px; border-radius:999px;
+  border:1.5px solid #DDDEFA; background:#E9E9F4; cursor:pointer; padding:0; vertical-align:middle; transition:background .25s}
+.theme-switch .knob{position:absolute; left:1.5px; top:1.5px; width:16px; height:16px; border-radius:50%;
+  background:#fff; display:flex; align-items:center; justify-content:center; font-size:9px;
+  transition:top .25s, background .25s; box-shadow:0 1px 4px rgba(0,0,0,.2)}
+body.dark .theme-switch{background:#1E2044; border-color:#2E3268}
+body.dark .theme-switch .knob{top:14px; background:#171A3C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Noto Sans KR',sans-serif; color:var(--ink); background:var(--paper); overflow:hidden}
+.stage{height:100%; display:flex; flex-direction:column; opacity:0; transition:opacity .5s ease}
+body.ready .stage{opacity:1}
+@media (prefers-reduced-motion: reduce){ .stage{opacity:1 !important; transition:none} }
+
+/* ── 상단 흰 밴드 (레퍼런스 20.9%) ── */
+.band{flex:0 0 20.9%; min-height:150px; display:flex; align-items:flex-start;
+  padding:clamp(18px,3.2vh,34px) clamp(22px,3vw,46px) 0; gap:clamp(20px,3vw,52px); position:relative}
+.band .logo{font-family:'Italiana',serif; font-size:clamp(56px,8.6vw,220px); line-height:.82;
+  letter-spacing:.01em; white-space:nowrap; color:var(--ink); text-decoration:none; flex:0 0 auto}
+.band .poem{flex:1; padding-top:clamp(4px,1vh,10px); min-width:0}
+.band .poem p{font-weight:400; font-size:clamp(10.5px,1vw,13.5px); line-height:1.95; color:var(--ink-soft); word-break:keep-all}
+.band .poem .credit{margin-top:clamp(8px,1.6vh,16px); font-size:clamp(10px,.9vw,12px); letter-spacing:.06em; color:var(--ink-soft)}
+.band .side{flex:0 0 auto; padding-top:0; margin-top:-4px}
+.band .side .cats{font-size:clamp(16px,1.5vw,21px); letter-spacing:.06em; white-space:nowrap}
+.band .side .cats a{color:var(--ink-soft); text-decoration:none; padding:2px 2px}
+.band .side .cats a:hover{color:var(--ink); text-decoration:underline}
+
+/* ── 일러스트 풀블리드 ── */
+.art{flex:1; position:relative; background-image:url('main-art.jpg');
+  background-size:cover; background-position:center; background-repeat:no-repeat; min-height:0}
+
+/* ── 문의 모달 · fx ── */
+.modal{position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center; background:rgba(11,12,34,.5)}
+.modal.open{display:flex}
+.mbox{width:min(420px,90vw); background:#fff; border-radius:14px; padding:26px; font-family:'Noto Sans KR',sans-serif}
+.mbox h3{font-family:'Noto Sans KR',sans-serif; font-weight:800; margin-bottom:14px}
+.mbox textarea{width:100%; height:120px; border:1.5px solid #cfd8de; border-radius:8px; padding:10px; font-family:inherit; font-size:14px; resize:none}
+.mbox .row{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
+.mbox button{border:0; border-radius:999px; padding:8px 20px; font-weight:700; cursor:pointer; font-family:inherit}
+.mbox .send{background:var(--main); color:#fff}
+.mbox .close{background:#eef1f3; color:#222}
+#fx{position:fixed; inset:0; pointer-events:none; z-index:60; overflow:hidden}
+#fx .fxfb{position:absolute; will-change:transform,opacity}
+
+/* ── 모바일: 밴드 세로 재배치 + 일러 비율 유지 ── */
+@media (max-width:760px){
+  body{overflow:auto}
+  .stage{height:auto; min-height:100%}
+  .band{flex:none; flex-direction:column; gap:14px; padding:22px 20px 18px}
+  .band .logo{font-size:15vw; white-space:normal; line-height:.9}
+  .band .side{text-align:left; padding-top:0}
+  .art{flex:none; aspect-ratio:16/9; min-height:340px}
+  .art .blk{max-width:76vw}
+}
+</style>
+</head>
+<body>
+<script>if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+
+<div class="stage">
+  <div class="band">
+    <a class="logo" href="index.html">RUNA</a>
+    <div class="poem">
+      <p>밤하늘 저편에서 태어난 달, 루나.<br>
+      홀로 어두운 하늘을 떠돌던 어느 날, 작은 햇살 한 줄기를 만나게 되었다.<br>
+      그날 이후, 하나둘 햇살이 모여들기 시작했고,<br>
+      이곳은 달과 햇살이 함께 빛나는 밤이 되었다.</p>
+      <div class="credit">SOOP LIVE&nbsp;&nbsp;&nbsp;&nbsp;Presented by 루나</div>
+    </div>
+    <div class="side">
+      <nav class="cats">
+        <a href="profile/">프로필</a> · <a href="notice/">공지</a> · <a href="schedule/">일정</a> · <a href="diary/">일기</a> · <a href="song/">노래책</a> · <a href="dress/">옷장</a> · <a href="work/">업보</a> · <a href="stamp/">스탬프</a> · <a href="ladder/">사다리</a> · <a href="#" onclick="openInquiry();return false;">문의</a><button class="theme-switch" id="themeSwitch" type="button" aria-label="다크모드"><span class="knob" id="themeKnob">🌙</span></button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="art">
+  </div>
+</div>
+
+<div class="modal" id="inqModal">
+  <div class="mbox">
+    <h3>💌 문의하기</h3>
+    <textarea id="inqText" placeholder="문의 내용을 적어주세요"></textarea>
+    <div class="row">
+      <button class="close" type="button" onclick="closeInquiry()">닫기</button>
+      <button class="send" type="button" onclick="sendInquiry()">보내기</button>
+    </div>
+  </div>
+</div>
+
+<div id="fx"></div>
+
+<script>
+function openInquiry(){document.getElementById('inqModal').classList.add('open')}
+function closeInquiry(){document.getElementById('inqModal').classList.remove('open')}
+function sendInquiry(){
+  var t=document.getElementById('inqText').value.trim();
+  if(!t){alert('내용을 적어주세요!');return}
+  if(typeof insertRow==='function'){ insertRow('inquiries',{message:t}).then(function(ok){alert(ok?'전송됐어요! 🌙':'전송 실패… 잠시 후 다시 시도해줘요');if(ok){closeInquiry();document.getElementById('inqText').value='';}}); }
+  else{ alert('전송됐어요! 🌙'); closeInquiry(); document.getElementById('inqText').value=''; }
+}
+(function(){
+  var sw=document.getElementById('themeSwitch'), kb=document.getElementById('themeKnob');
+  kb.textContent=document.body.classList.contains('dark')?'☀️':'🌙';
+  sw.addEventListener('click',function(){
+    document.body.classList.toggle('dark');
+    var dark=document.body.classList.contains('dark');
+    kb.textContent=dark?'☀️':'🌙';
+    localStorage.setItem('theme', dark?'dark':'light');
+  });
+})();
+window.addEventListener('load',function(){document.body.classList.add('ready')});
+setTimeout(function(){document.body.classList.add('ready')},1600);
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase.js"></script>
+<script>
+/* ── 메인: 스토리 문구·일러스트 admin 연동 ── */
+(async function(){
+  try{
+    const { data: rows } = await db.from('profile').select('data').eq('id', 1);
+    const d = (rows && rows[0] && rows[0].data) || {};
+    if((d['main-story']||'').trim()){
+      const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      document.querySelector('.band .poem p').innerHTML = d['main-story'].trim().split(/\n+/).map(esc).join('<br>\n      ');
+    }
+    if((d['main-art']||'').trim()){
+      document.querySelector('.art').style.backgroundImage = "url('"+d['main-art'].trim().replace(/'/g,"%27")+"')";
+    }
+  }catch(e){}
+})();
+</script>
+<script src="fx.js"></script>
+<script>
+(function(){
+  if(typeof window.fxHearts==='function') return;
+  var rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fx=document.getElementById('fx');
+  var SH=['✦','✧','★','✦','☽','✧','✦'];
+  if(!rm){
+    for(var i=0;i<10;i++){
+      var s=document.createElement('span'); s.className='fxfb'; s.textContent=SH[i%SH.length];
+      s.style.cssText='left:'+(Math.random()*100)+'%;top:'+(100+Math.random()*20)+'%;font-size:'+(9+Math.random()*11)+'px;color:rgba(255,255,255,.85);animation:fbF '+(11+Math.random()*8)+'s linear '+(Math.random()*10)+'s infinite';
+      fx.appendChild(s);
+    }
+    var st=document.createElement('style');
+    st.textContent='@keyframes fbF{to{transform:translateY(-130vh) rotate(30deg);opacity:0}} @keyframes fbP{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.5) translateY(-46px);opacity:0}}';
+    document.head.appendChild(st);
+  }
+  document.addEventListener('click',function(e){
+    if(rm) return;
+    for(var i=0;i<5;i++){
+      var p=document.createElement('span'); p.className='fxfb'; p.textContent=['✦','★','♪','✧','✦'][i%5];
+      p.style.cssText='left:'+(e.clientX-8+(Math.random()*30-15))+'px;top:'+(e.clientY-8+(Math.random()*20-10))+'px;font-size:'+(12+Math.random()*10)+'px;animation:fbP .7s ease-out forwards';
+      fx.appendChild(p); setTimeout(function(el){return function(){el.remove()}}(p),750);
+    }
+  });
+})();
+</script>
+</body>
+</html>

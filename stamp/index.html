@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>루나 · 스탬프</title>
+  <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/lt/ltg8022/ltg8022.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Noto+Sans+KR:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .st-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:6px; }
+    .st-eyebrow { font-family:'Italiana',serif; font-size:14px; letter-spacing:4px; color:var(--main); }
+    .st-title { font-size:26px; font-weight:800; color:var(--main-dark); }
+    .st-sub { font-size:13px; color:var(--text-soft); line-height:1.6; margin-bottom:12px; }
+    .st-update { font-size:12px; color:var(--text-soft); background:#fff; border:1px solid var(--main-light); padding:6px 14px; border-radius:999px; }
+    body.dark .st-update { background:var(--card); }
+
+    /* ── 시청자 검색 + 칩 ── */
+    .search-box { width:100%; padding:13px 18px; border-radius:999px; border:1.5px solid var(--main-light); font-size:14px; outline:none; background:#fff; margin:6px 0 14px; }
+    .search-box:focus { border-color:var(--main); }
+    body.dark .search-box { background:var(--card); color:var(--text); }
+
+    .chips { display:flex; flex-wrap:wrap; gap:8px; max-height:168px; overflow-y:auto; padding:2px; }
+    .chip { display:inline-flex; align-items:center; gap:8px; padding:7px 14px 7px 7px; border-radius:999px;
+      border:1.5px solid var(--main-light); background:#fff; cursor:pointer; transition:all var(--transition); }
+    .chip:hover { border-color:var(--main); transform:translateY(-2px); }
+    .chip.on { background:var(--main); border-color:var(--main); box-shadow:var(--shadow); }
+    .chip.on .c-nick, .chip.on .c-cnt { color:#fff; }
+    .chip.on .c-cnt { background:rgba(255,255,255,.26); }
+    .chip .c-av { width:28px; height:28px; border-radius:50%; object-fit:cover; background:var(--main-light); flex-shrink:0; }
+    .chip .c-fb { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg,#8A8FE8,#4A4E85); color:#fff; font-size:12px; font-weight:700; flex-shrink:0; }
+    .chip .c-nick { font-size:13.5px; font-weight:700; color:var(--text); white-space:nowrap; }
+    .chip .c-cnt { font-size:11px; font-weight:800; color:var(--main-dark); background:var(--main-light); border-radius:999px; padding:2px 8px; }
+    body.dark .chip { background:var(--card); }
+
+    /* ── 스탬프판 = 밤하늘 패널 ── */
+    .board-card { position:relative; overflow:hidden; border-radius:var(--radius-lg); padding:24px 22px 26px;
+      background:linear-gradient(180deg,#0B0C22 0%,#232059 55%,#4B3F86 100%);
+      box-shadow:0 18px 44px rgba(32,30,80,.35); border:1.5px solid rgba(170,175,250,.25); }
+    .board-card::before { content:''; position:absolute; inset:0; pointer-events:none; opacity:.9;
+      background-image:
+        radial-gradient(1.6px 1.6px at 12% 18%, #fff, transparent),
+        radial-gradient(1.4px 1.4px at 32% 62%, #fff, transparent),
+        radial-gradient(1.8px 1.8px at 58% 12%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 74% 44%, #fff, transparent),
+        radial-gradient(1.6px 1.6px at 88% 74%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 22% 88%, #fff, transparent),
+        radial-gradient(1.4px 1.4px at 46% 36%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 66% 84%, #fff, transparent); }
+    .board-card > * { position:relative; z-index:1; }
+    .board-top { display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.22); padding-bottom:11px; margin-bottom:18px; }
+    .board-top .bn { font-size:19px; font-weight:800; color:#fff; }
+    .board-top .bc { font-family:'Italiana',serif; font-size:20px; letter-spacing:.12em; color:#DEE0FF; white-space:nowrap; }
+
+    .board { display:flex; flex-direction:column; gap:3px; padding-right:5%; }
+    .brow { display:grid; grid-template-columns:repeat(10, 1fr); gap:3px; }
+    .brow.odd { transform:translateX(5%); }
+    @media (max-width:560px){ .board { padding-right:10%; } .brow { grid-template-columns:repeat(5,1fr); } .brow.odd { transform:translateX(10%); } }
+
+    .cell { position:relative; aspect-ratio:1/1; border-radius:50%; background:rgba(255,255,255,.05);
+      border:1.5px solid rgba(190,195,255,.32); display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700; color:rgba(222,224,255,.6); transition:transform var(--transition); }
+    .cell .num { opacity:.75; }
+    /* 10칸마다 = 달 마디 */
+    .cell.tenth { border-color:rgba(255,225,150,.75); box-shadow:0 0 0 3px rgba(255,214,120,.13); }
+    .cell.tenth .num { color:#FFE6A8; }
+    .cell.stamped { background:rgba(255,255,255,.1); border-color:rgba(255,214,120,.55); }
+    .cell.stamped .num { display:none; }
+    .cell.stamped.tenth { box-shadow:0 0 14px 3px rgba(255,200,90,.45); border-color:#FFD36E; }
+    .cell .sun { width:96%; height:96%; object-fit:contain; animation:sunIn .34s cubic-bezier(.34,1.56,.64,1) backwards;
+      filter:drop-shadow(0 0 6px rgba(255,205,110,.55)); }
+    .cell.next { animation:pulse 1.6s ease-in-out infinite; }
+    @keyframes sunIn { from { transform:scale(0) rotate(-25deg); opacity:0; } to { transform:scale(1) rotate(-6deg); opacity:1; } }
+    @keyframes pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(255,214,120,.45);} 50%{ box-shadow:0 0 0 7px rgba(255,214,120,0);} }
+    @media (prefers-reduced-motion: reduce){ .cell .sun { animation:none; } .cell.next { animation:none; } }
+    .cell:hover { transform:scale(1.1); z-index:6; }
+
+    /* 진행바 */
+    .prog { margin-top:20px; }
+    .prog .pt { font-size:12.5px; font-weight:700; color:#DEE0FF; margin-bottom:8px; display:flex; justify-content:space-between; }
+    .prog .bar { height:9px; border-radius:999px; background:rgba(255,255,255,.14); overflow:hidden; }
+    .prog .fill { height:100%; border-radius:999px; width:0; transition:width .6s ease;
+      background:linear-gradient(90deg,#9AA0FF,#FFD36E); box-shadow:0 0 10px rgba(255,211,110,.5); }
+
+    .hint-line { color:var(--text-soft); font-size:13px; padding:9px 4px; }
+    .hint-line span { opacity:.7; }
+    .no-viewer { text-align:center; padding:56px 0; color:var(--text-soft); line-height:1.7; }
+    .no-viewer .ic { font-size:44px; margin-bottom:10px; opacity:.5; }
+  </style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="nav-logo">RUNA</a>
+  <a href="../index.html">메인</a>
+  <a href="../profile/">프로필</a>
+  <a href="../notice/">공지</a>
+  <a href="../schedule/">일정</a>
+  <a href="../diary/">일기</a>
+  <a href="../song/">노래책</a>
+  <a href="../dress/">옷장</a>
+  <a href="../work/">업보</a>
+  <a href="index.html" class="active">스탬프</a>
+  <a href="../ladder/">사다리</a>
+  <button class="theme-switch" id="themeSwitch" type="button" aria-label="다크모드 전환"><span class="knob" id="themeKnob">🌙</span></button>
+</div></nav>
+
+<div class="container stagger">
+  <div class="card">
+    <div class="st-head">
+      <div>
+        <div class="st-eyebrow">STAMP</div>
+        <div class="st-title">☀️ 햇살 스탬프판</div>
+      </div>
+      <span class="st-update" id="update-date"></span>
+    </div>
+    <div class="st-sub">닉네임을 검색해서 본인 스탬프판을 열어보세요. 밤하늘에 햇살이가 하나씩 채워져요 🌙</div>
+    <input class="search-box" id="search" placeholder="🔍 닉네임 또는 아이디 검색...">
+    <div class="chips" id="chips"><div class="spinner"></div></div>
+  </div>
+
+  <div id="board-wrap" style="display:none">
+    <div class="board-card">
+      <div class="board-top">
+        <span class="bn" id="board-name"></span>
+        <span class="bc" id="board-count"></span>
+      </div>
+      <div class="board" id="board"></div>
+      <div class="prog">
+        <div class="pt"><span id="prog-text"></span><span id="prog-pct"></span></div>
+        <div class="bar"><div class="fill" id="prog-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="empty-card" style="display:none">
+    <div class="no-viewer"><div class="ic">☀️</div>아직 스탬프 명단에 등록된 사람이 없어요</div>
+  </div>
+</div>
+
+<footer>© 2026 루나 Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function soopAvatar(id){ if(!id) return null; id=String(id).trim().toLowerCase(); if(id.length<2) return null; return `https://profile.img.sooplive.co.kr/LOGO/${id.slice(0,2)}/${id}/${id}.jpg`; }
+
+  const TOTAL = 100;   /* 칸 수 (10 × 10) — 보상 목록 없음 */
+
+  /* 명단 = stamps 테이블 자체 (관리자 ☀️스탬프 탭에서 등록 · 업보 시청자와 별개) */
+  let viewers = [], current = null;
+
+  async function init(){
+    viewers = await fetchAll('stamps', { order:'sort_order', asc:true }) || [];
+
+    const latest = viewers.reduce((m,s)=> s.updated_at && s.updated_at>m ? s.updated_at : m, '');
+    document.getElementById('update-date').textContent = latest ? '갱신일: ' + latest.slice(0,10) : '';
+
+    if(!viewers.length){ document.getElementById('chips').innerHTML=''; document.getElementById('empty-card').style.display='block'; enableIframeAutoHeight(); return; }
+
+    /* ?v=닉네임 으로 바로 열기 (링크 공유용) */
+    const q = new URLSearchParams(location.search).get('v');
+    const found = q ? viewers.find(v=> (v.nickname||'').toLowerCase() === q.toLowerCase() || String(v.id) === q) : null;
+    if(found){
+      current = found.id;
+      document.getElementById('search').value = found.nickname || '';
+      renderChips(filtered((found.nickname||'').toLowerCase()));
+      renderBoard();
+    } else {
+      renderChips([]);
+    }
+    enableIframeAutoHeight();
+  }
+
+  function count(vid){ const v = viewers.find(x=>String(x.id)===String(vid)); return v ? (v.count||0) : 0; }
+
+  function renderChips(list){
+    const el = document.getElementById('chips');
+    const q = (document.getElementById('search').value||'').trim();
+    if(!q){ el.innerHTML = `<div class="hint-line">🔍 닉네임을 입력하면 여기에 나와요 <span>(등록 ${viewers.length}명)</span></div>`; return; }
+    if(!list.length){ el.innerHTML = '<div class="hint-line">검색 결과가 없어요 — 닉네임을 다시 확인해 주세요</div>'; return; }
+    el.innerHTML = list.map(v=>{
+      const av = soopAvatar(v.soop_id); const ini = (v.nickname||'?').charAt(0);
+      const avHtml = av ? `<img class="c-av" src="${av}" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=\\'c-fb\\'>${ini}</div>'">` : `<div class="c-fb">${ini}</div>`;
+      return `<div class="chip ${String(current)===String(v.id)?'on':''}" onclick="select('${v.id}')">
+        ${avHtml}<span class="c-nick">${esc(v.nickname)}</span><span class="c-cnt">${count(v.id)}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function select(vid){
+    current = vid;
+    const q = (document.getElementById('search').value||'').trim().toLowerCase();
+    renderChips(filtered(q));
+    renderBoard();
+    document.getElementById('board-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  function filtered(q){
+    if(!q) return viewers;
+    return viewers.filter(v => (v.nickname||'').toLowerCase().includes(q) || (v.soop_id||'').toLowerCase().includes(q));
+  }
+
+  function renderBoard(){
+    const v = viewers.find(x=>String(x.id)===String(current)); if(!v) return;
+    const n = count(v.id);
+    document.getElementById('board-wrap').style.display = 'block';
+    document.getElementById('board-name').textContent  = `${v.nickname} 님의 스탬프판`;
+    document.getElementById('board-count').textContent = `${n} / ${TOTAL}`;
+
+    /* 100칸 (10칸 × 10줄, 홀수줄 지그재그) */
+    let html = '';
+    for(let r=0; r<10; r++){
+      html += `<div class="brow ${r%2 ? 'odd':''}">`;
+      for(let c=1; c<=10; c++){
+        const i = r*10 + c;
+        const on = i <= n;
+        const tenth = (i % 10 === 0);
+        const isNext = (i === n+1);
+        html += `<div class="cell ${on?'stamped':''} ${tenth?'tenth':''} ${isNext?'next':''}" title="${i}">
+          ${ on ? `<img class="sun" src="../stamp.png" alt="" style="animation-delay:${Math.min(i,40)*8}ms">` : `<span class="num">${i}</span>` }
+        </div>`;
+      }
+      html += `</div>`;
+    }
+    document.getElementById('board').innerHTML = html;
+
+    /* 진행바 */
+    const pct = Math.round((n / TOTAL) * 100);
+    document.getElementById('prog-text').textContent = n >= TOTAL ? '100개 완주! 🎉 밤하늘이 햇살로 가득 찼어요' : `100개까지 ${TOTAL - n}개 남았어요`;
+    document.getElementById('prog-pct').textContent = pct + '%';
+    document.getElementById('prog-fill').style.width = Math.max(2, pct) + '%';
+    enableIframeAutoHeight();
+  }
+
+  document.getElementById('search').addEventListener('input', e=>{
+    const q = e.target.value.trim().toLowerCase();
+    const list = q ? filtered(q) : [];
+    if(list.length === 1) current = list[0].id;
+    else if(!list.some(v=>String(v.id)===String(current))) current = null;
+    renderChips(list);
+    if(current) renderBoard();
+    else { document.getElementById('board-wrap').style.display='none'; enableIframeAutoHeight(); }
+  });
+
+  init();
+</script>
+<script>
+(function(){
+  if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+  var sw = document.getElementById('themeSwitch');
+  var knob = document.getElementById('themeKnob');
+  function refresh(){ if(knob) knob.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; }
+  if (sw) sw.addEventListener('click', function(){
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    refresh();
+  });
+  refresh();
+})();
+</script>
+<!-- 공통 연출(입자·클릭·기울기) -->
+<script src="../fx.js"></script>
+</body>
+</html>
