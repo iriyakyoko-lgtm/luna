@@ -39,10 +39,11 @@
 
     /* ── 좌: 보상 박스 (마스코트가 걸터앉음) ── */
     .reward-box { position:relative; background:#fff; border:1.5px solid var(--main-light); border-radius:var(--radius-lg);
-      padding:26px 20px 20px; box-shadow:var(--shadow); margin-top:88px; }
+      padding:26px 20px 20px; box-shadow:var(--shadow); margin-top:120px; }
     body.dark .reward-box { background:var(--card); }
-    .reward-box .mascot { position:absolute; top:-104px; left:4px; width:140px; pointer-events:none;
+    .reward-box .mascot { position:absolute; top:-140px; right:8px; left:auto; width:124px; pointer-events:none;
       filter:drop-shadow(0 6px 12px rgba(32,30,80,.22)); }
+    @media (max-width:920px){ .reward-box .mascot { width:110px; top:-124px; } }
     .reward-box .rb-t { font-size:15px; font-weight:800; color:var(--main-dark); margin-bottom:3px; }
     .reward-box .rb-s { font-size:11.5px; color:var(--text-soft); margin-bottom:14px; }
 
@@ -145,7 +146,7 @@
   <div class="st-wrap" id="board-wrap" style="display:none">
     <!-- 좌: 보상 목록 -->
     <div class="reward-box">
-      <img class="mascot" src="../haessal_sit.png" alt="햇살이">
+      <img class="mascot" src="../haessal.png" alt="햇살이">
       <div class="rb-t">스탬프 보상</div>
       <div class="rb-s">모을수록 커지는 보상 ✦</div>
       <div id="reward-list"></div>
@@ -186,7 +187,7 @@
     { at:20, text:'하단 배너 6단 (옷 선택 가능)' },
     { at:30, text:'일러스트 상단 배너' },
   ];
-  let TOTAL = 30;
+  let TOTAL = 100;   /* 기본 100칸 (admin에서 변경 가능) */
   let REWARD_AT = {};
   function syncRewards(){
     REWARDS.sort((a,b)=>a.at-b.at);

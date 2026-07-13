@@ -263,8 +263,8 @@
       <div class="card-title">🎁 보상 목록 · 칸 수</div>
       <div class="input-hint" style="margin-bottom:10px">한 줄에 <b>개수|보상</b> 형식으로 적어요. 예: <b>5|움짤 프사</b><br>여기서 고치면 스탬프판 왼쪽 목록과 판 위의 🎁칸이 같이 바뀝니다.</div>
       <div class="form-field">
-        <label class="input-label">전체 칸 수 (10칸 = 1줄)</label>
-        <input class="input" id="f-stamp-total" type="number" min="10" max="200" step="10" placeholder="30">
+        <label class="input-label">전체 칸 수 (10칸 = 1줄 · 기본 100)</label>
+        <input class="input" id="f-stamp-total" type="number" min="10" max="200" step="10" placeholder="100">
       </div>
       <div class="form-field">
         <label class="input-label">보상 목록</label>
@@ -750,7 +750,7 @@
   /* 스탬프 명단은 업보 시청자와 별개 — stamps 테이블이 닉네임/아이디/개수를 직접 가짐 */
   let stamps = [], stampCur = null, stampVal = 0;
   let STAMP_REWARDS = [[5,'움짤 프사'],[10,'방셀'],[15,'배너 1 (옷 선택 가능)'],[20,'하단 배너 6단 (옷 선택 가능)'],[30,'일러스트 상단 배너']];
-  let STAMP_TOTAL = 30;
+  let STAMP_TOTAL = 100;
 
   function parseStampConfig(saved){
     const t = parseInt(saved['stamp-total']);
