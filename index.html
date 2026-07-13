@@ -8,6 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
+@font-face{
+  font-family:'Prettynight';
+  src:url('prettynight.woff2') format('woff2'),
+      url('prettynight.woff') format('woff');
+  font-weight:400; font-style:normal; font-display:swap;
+}
 :root{
   --main:#6A6FE0; --main-dark:#3B3FA8; --main-light:#DDDEFA; --bg:#F4F4FD;
   --paper:#FFFFFF; --ink:#1B1B3A; --ink-soft:#4A4E85;
@@ -30,7 +36,7 @@ body.dark .theme-switch{background:#1E2044; border-color:#2E3268}
 body.dark .theme-switch .knob{top:14px; background:#171A3C}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
-body{font-family:'Noto Sans KR',sans-serif; color:var(--ink); background:var(--paper); overflow:hidden}
+body{font-family:'Prettynight','Noto Sans KR',sans-serif; color:var(--ink); background:var(--paper); overflow:hidden}
 .stage{height:100%; display:flex; flex-direction:column; opacity:0; transition:opacity .5s ease}
 body.ready .stage{opacity:1}
 @media (prefers-reduced-motion: reduce){ .stage{opacity:1 !important; transition:none} }
@@ -55,8 +61,8 @@ body.ready .stage{opacity:1}
 /* ── 문의 모달 · fx ── */
 .modal{position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center; background:rgba(11,12,34,.5)}
 .modal.open{display:flex}
-.mbox{width:min(420px,90vw); background:#fff; border-radius:14px; padding:26px; font-family:'Noto Sans KR',sans-serif}
-.mbox h3{font-family:'Noto Sans KR',sans-serif; font-weight:800; margin-bottom:14px}
+.mbox{width:min(420px,90vw); background:#fff; border-radius:14px; padding:26px}
+.mbox h3{font-weight:800; margin-bottom:14px}
 .mbox textarea{width:100%; height:120px; border:1.5px solid #cfd8de; border-radius:8px; padding:10px; font-family:inherit; font-size:14px; resize:none}
 .mbox .row{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
 .mbox button{border:0; border-radius:999px; padding:8px 20px; font-weight:700; cursor:pointer; font-family:inherit}
