@@ -260,9 +260,9 @@ footer{text-align:center; color:var(--text-soft); font-size:12px; line-height:1.
       <img class="avatar" id="avatarWrap" src="https://profile.img.sooplive.co.kr/LOGO/lt/ltg8022/ltg8022.jpg" referrerpolicy="no-referrer" alt="루나">
       <div>
         <div class="nm" data-hook="info-name">루나♩</div>
-        <div class="en2">RUNA</div>
+        <div class="en2" data-hook="info-en">RUNA</div>
         <div class="catch" data-hook="info-catchphrase">햇살이가 있어 더욱 빛나는 달, 루나 🖤</div>
-        <div class="quote">“웅냠냠”</div>
+        <div class="quote" data-hook="quote">“웅냠냠”</div>
         <div class="igrid">
           <div class="irow"><span class="k">생일</span><span class="sp"></span><span class="v"><span class="dbadge" id="birthBadge" style="display:none"></span><span data-hook="info-birth">08.22</span></span></div>
           <div class="irow"><span class="k">데뷔</span><span class="sp"></span><span class="v"><span class="dbadge" id="debutBadge"></span><span data-hook="info-debut">2025.12.13</span></span></div>
@@ -281,8 +281,8 @@ footer{text-align:center; color:var(--text-soft); font-size:12px; line-height:1.
   <div class="a-left">
     <div class="card grow">
       <div class="sec-h"><span class="en">CHAT RULES</span><span class="kr">채팅 규칙</span></div>
-      <p class="rules-lead">아래의 것들은 받지 않겠습니다!</p>
-      <div class="rl">
+      <p class="rules-lead" data-hook="rules-lead">아래의 것들은 받지 않겠습니다!</p>
+      <div class="rl" id="rl">
         <div class="rule"><span class="no">01</span><span class="t">개인정보 질문</span></div>
         <div class="rule"><span class="no">02</span><span class="t">시청자 간의 친목</span></div>
         <div class="rule"><span class="no">03</span><span class="t">TMI</span></div>
@@ -291,7 +291,7 @@ footer{text-align:center; color:var(--text-soft); font-size:12px; line-height:1.
         <div class="rule"><span class="no">06</span><span class="t">과도한 일기장</span></div>
         <div class="rule"><span class="no">07</span><span class="t">나쁜말</span></div>
       </div>
-      <p class="rules-tail">호칭은 <b>루나님</b> 혹은 <b>루나야</b>로 통일할게요!</p>
+      <p class="rules-tail" id="rules-tail">호칭은 <b>루나님</b> 혹은 <b>루나야</b>로 통일할게요!</p>
     </div>
     <div class="card">
       <div class="sec-h"><span class="en">LINKS</span><span class="kr">링크</span></div>
@@ -436,7 +436,19 @@ setTimeout(function(){document.body.classList.add('ready')},1200);
     const { data: rows } = await db.from('profile').select('data').eq('id', 1);
     const d = (rows && rows[0] && rows[0].data) || {};
     const set = (k) => { const v=(d[k]||'').trim(); if(v) document.querySelectorAll('[data-hook="'+k+'"]').forEach(e=>e.textContent=v); };
-    ['info-name','info-catchphrase','info-birth','info-debut','info-gender','info-fandom','info-content','info-tags','msg','fan-desc','like1','like2','like3','dislike1','dislike2','tmi-item','tmi-game','tmi-song','tmi-genre'].forEach(set);
+    ['info-name','info-catchphrase','info-birth','info-debut','info-gender','info-fandom','info-content','info-tags','msg','fan-desc','like1','like2','like3','dislike1','dislike2','tmi-item','tmi-game','tmi-song','tmi-genre','info-en','quote','rules-lead'].forEach(set);
+
+    /* 채팅 규칙 (한 줄 = 한 규칙) */
+    const escH=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    if((d['chat-rules']||'').trim()){
+      const rs=d['chat-rules'].trim().split(/\n+/).map(t=>t.trim()).filter(Boolean);
+      document.getElementById('rl').innerHTML = rs.map((t,i)=>
+        '<div class="rule"><span class="no">'+String(i+1).padStart(2,'0')+'</span><span class="t">'+escH(t)+'</span></div>').join('');
+    }
+    if((d['rules-tail']||'').trim()){
+      document.getElementById('rules-tail').innerHTML = escH(d['rules-tail'].trim())
+        .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+    }
 
     /* 팬캐릭터 이미지·특징 (admin 연동) */
     if((d['fan-char']||'').trim()){ const fc=document.getElementById('haessal'); if(fc) fc.src=d['fan-char'].trim(); }

@@ -384,3 +384,11 @@ body.dark .nav a:not(.nav-logo):hover{ background:rgba(255,255,255,.08); }
 /* 페이지 타이틀도 프로필 라벨 문법으로 */
 .page-title{ font-weight:900 !important; color:var(--main-dark) !important; letter-spacing:.06em; }
 .page-subtitle{ color:var(--text-soft) !important; font-weight:700; }
+
+
+/* ══ 카테고리 상단 장식 헤딩 (미니게임과 동일) ══ */
+.ohd{ display:flex; align-items:center; justify-content:center; gap:12px; margin:2px 0 18px;
+  font-family:'Italiana',serif; font-size:22px; letter-spacing:.22em; color:var(--main-dark); }
+.ohd i{ flex:1; height:1px; background:var(--main-light); }
+.ohd .dm{ font-size:13px; color:var(--main); }
+@media (max-width:560px){ .ohd{ font-size:17px; letter-spacing:.16em; } }
