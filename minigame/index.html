@@ -58,6 +58,112 @@
     .game-tab{border:1.5px solid var(--main-light); background:var(--card); color:var(--text-soft);
       border-radius:999px; padding:10px 22px; font-size:14.5px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .18s ease;}
     .game-tab.on{background:var(--main); border-color:transparent; color:#fff; box-shadow:0 6px 16px rgba(32,30,80,.28);}
+
+    /* ── 제비뽑기 (컵에서 막대 뽑기) ── */
+    .jb-set{display:flex; align-items:center; gap:22px; flex-wrap:wrap;}
+    .jb-stage{display:flex; justify-content:center; padding:168px 0 14px; overflow-x:auto;}
+    .jb-scene{position:relative; display:inline-flex; flex-direction:column; align-items:stretch;}
+    .jb-cup .jb-gob{position:absolute; right:6px; bottom:3px; width:64px; transform:rotate(4deg);
+      filter:drop-shadow(0 5px 9px rgba(32,30,80,.35)); pointer-events:none;}
+    .jb-sticks{position:relative; display:flex; gap:32px; padding:0 36px; align-items:flex-end; height:176px; z-index:1; justify-content:center;}
+    .jb-stick{position:relative; width:22px; height:172px; background:none; border:none; padding:0; cursor:pointer; font-family:inherit;
+      transform:translateY(0) rotate(var(--rot,0deg));
+      transition:transform .78s cubic-bezier(.35,.05,.25,1.22);
+      animation:jbRise .5s cubic-bezier(.3,1.2,.5,1) backwards;}
+    @keyframes jbRise{from{opacity:0; transform:translateY(48px) rotate(var(--rot,0deg));}}
+    .jb-stick:not(.out):not(.wig):hover{transform:translateY(-11px) rotate(var(--rot,0deg));}
+    .jb-stick.wig{animation:jbWig .32s ease;}
+    @keyframes jbWig{25%{transform:translateY(-5px) rotate(-3.5deg)}60%{transform:translateY(-9px) rotate(3deg)}100%{transform:translateY(-11px) rotate(0deg)}}
+    .jb-stick.out{transform:translateY(-132px) rotate(0deg); cursor:default; z-index:5;}
+    .jb-stick .bar{position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:15px; height:100%;
+      border-radius:8px 8px 6px 6px;
+      background:linear-gradient(90deg,#C9CCF7,#A8ADEE 55%,#8189DC);
+      box-shadow:inset -2px 0 2px rgba(0,0,0,.14), inset 2px 0 2px rgba(255,255,255,.45);}
+    .jb-stick .cap{position:absolute; top:-27px; left:50%; transform:translateX(-50%); width:48px; height:48px; border-radius:50%;
+      background:#fff; border:2px solid var(--main-light); display:flex; align-items:center; justify-content:center;
+      box-shadow:0 3px 7px rgba(32,30,80,.28);}
+    body.dark .jb-stick .cap{background:var(--card); border-color:#2E3268;}
+    .jb-stick .cap img{width:88%; height:88%; object-fit:contain; display:block;}
+    .jb-stick .cap .win-b{position:absolute; right:-6px; bottom:-4px; font-size:17px; filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
+    .jb-stick .no{position:absolute; top:26px; left:50%; transform:translateX(-50%); font-size:9.5px; font-weight:800; color:#3B3FA8; font-style:normal;}
+    .jb-stick .tip{position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:15px; height:40px;
+      border-radius:2px 2px 6px 6px; opacity:0; transition:opacity .25s ease .35s;}
+    .jb-stick.out .tip{opacity:1;}
+    .tip.win{background:linear-gradient(#FFE39A,#E0A93B); box-shadow:0 0 14px rgba(224,169,59,.65);}
+    .tip.lose{background:linear-gradient(#B8BBE4,#8E93C4);}
+    .jb-toastwrap{height:52px; display:flex; justify-content:center; align-items:center;}
+    .jb-toast{opacity:0; transform:scale(.55); transition:all .3s cubic-bezier(.3,1.4,.5,1);
+      background:#fff; border:2px solid; border-radius:999px; padding:10px 24px; font-size:16px; font-weight:800;
+      box-shadow:0 10px 24px rgba(32,30,80,.22); white-space:nowrap;}
+    body.dark .jb-toast{background:var(--card);}
+    .jb-toast.show{opacity:1; transform:scale(1);}
+    .jb-toast.win{border-color:#E0A93B; color:#A9761B; font-size:17.5px;}
+    body.dark .jb-toast.win{color:#F0C463;}
+    .jb-toast.lose{border-color:#A8ADEE; color:#6266A0; font-size:17px;}
+    .jb-cup{position:relative; z-index:3; height:96px; margin-top:-92px; border-radius:16px 16px 30px 30px;
+      background:linear-gradient(#3B3FA8,#232059);
+      box-shadow:inset 0 10px 0 rgba(255,255,255,.13), inset 0 -8px 14px rgba(0,0,0,.25), 0 12px 24px rgba(32,30,80,.28);}
+    .jb-cup::before{content:''; position:absolute; top:0; left:0; right:0; height:13px;
+      border-radius:16px 16px 46% 46%; background:rgba(8,8,30,.3);}
+    .jb-cup::after{content:'🌙 루나의 제비뽑기 🌙'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      color:#E9EAFF; font-size:13.5px; font-weight:800; letter-spacing:2px;}
+
+    /* ── 뽑기(가챠) ── */
+    .gc-stage{position:relative; display:flex; justify-content:center; padding:16px 0 10px;}
+    .gc-machine{position:relative; width:min(360px, 92vw);}
+    .gc-art{display:block; width:100%; height:auto; filter:drop-shadow(0 14px 26px rgba(32,30,80,.22));}
+    .gc-machine.shake{animation:gcShakeA .55s ease;}
+    @keyframes gcShakeA{20%{transform:translate(-3px,1px) rotate(-.7deg)}50%{transform:translate(3px,-1px) rotate(.7deg)}80%{transform:translate(-2px,0)}}
+    .gc-knob{position:absolute; left:41.5%; top:72.5%; width:15%; aspect-ratio:1;
+      transform:translate(-50%,-50%); border:none; background:none; padding:0; cursor:pointer; border-radius:50%;}
+    .gc-knob::after{content:''; position:absolute; inset:-6px; border-radius:50%; border:2px dashed rgba(255,255,255,.0); transition:all .2s;}
+    .gc-knob:hover::after{border-color:rgba(255,255,255,.8); box-shadow:0 0 16px rgba(255,255,255,.55);}
+    .gc-knob:disabled{cursor:default;}
+    .gc-knob:disabled::after{border-color:transparent; box-shadow:none;}
+    .gc-knob.spin{animation:gcSpinA .95s cubic-bezier(.45,.1,.3,1);}
+    @keyframes gcSpinA{to{transform:translate(-50%,-50%) rotate(540deg);}}
+    .gc-turn{margin-top:6px; font-size:12px; font-weight:800; color:var(--text-soft); text-align:center;}
+    .gc-ballwrap{position:absolute; inset:0; pointer-events:none; z-index:8;}
+    .gc-ball{position:absolute; left:41%; bottom:11%; width:56px; pointer-events:auto; cursor:pointer;
+      transform:translateX(-50%); filter:drop-shadow(0 8px 14px rgba(32,30,80,.3));}
+    .gc-ball.pop{animation:gcPop .7s cubic-bezier(.35,.1,.3,1) forwards;}
+    @keyframes gcPop{
+      0%{transform:translateX(-50%) translateY(6px) scale(.4); opacity:0;}
+      35%{transform:translateX(-50%) translateY(34px) scale(.85); opacity:1;}
+      60%{transform:translateX(-50%) translateY(22px) scale(.9);}
+      100%{transform:translateX(-50%) translateY(34px) scale(.9);}
+    }
+    .gc-ball.grow{transition:all .75s cubic-bezier(.4,.1,.25,1.15);}
+    .gc-ball .half{position:absolute; left:0; width:100%; transition:all .6s cubic-bezier(.5,.05,.3,1);}
+    .gc-ball .h-top{top:0; z-index:2;}
+    .gc-ball .h-bot{bottom:0;}
+    .gc-ball.open .h-top{transform:translateY(-58%) rotate(-16deg); opacity:.92;}
+    .gc-ball .prize{position:absolute; left:50%; top:46%; transform:translate(-50%,-50%) scale(0); z-index:1;
+      transition:transform .45s cubic-bezier(.3,1.5,.5,1) .28s; text-align:center; white-space:nowrap;}
+    .gc-ball.open .prize{transform:translate(-50%,-50%) scale(1);}
+    .prize .pt{display:inline-block; background:#fff; border:2px solid; border-radius:999px; padding:8px 18px; font-size:15px; font-weight:800; max-width:210px; white-space:normal; line-height:1.35;}
+    body.dark .prize .pt{background:var(--card);}
+    .prize.g0 .pt{border-color:#A8ADEE; color:#6266A0;}
+    .prize.g1 .pt{border-color:var(--main); color:var(--main-dark); box-shadow:0 8px 18px rgba(106,111,224,.28);}
+    .prize.g2 .pt{border-color:#E0A93B; color:#A9761B; box-shadow:0 8px 20px rgba(224,169,59,.4);}
+    body.dark .prize.g2 .pt{color:#F0C463;}
+    .gc-grades{display:flex; flex-wrap:wrap; gap:12px; margin:10px 0 8px;}
+    .gc-grade{flex:1 1 250px; display:flex; align-items:center; gap:11px; background:var(--main-light); border-radius:14px; padding:10px 13px;}
+    .gc-grade>img{width:48px; height:48px; object-fit:contain; filter:drop-shadow(0 3px 5px rgba(32,30,80,.22));}
+    .gg-body{flex:1;}
+    .gg-name{font-size:12px; font-weight:800; margin-bottom:5px; color:var(--text-soft); letter-spacing:.5px;}
+    .gc-grade.g1 .gg-name{color:var(--main-dark);}
+    .gc-grade.g2 .gg-name{color:#B8860B;}
+    .gg-row{display:flex; gap:8px; align-items:center; font-size:12px; font-weight:700; color:var(--text-soft);}
+    .gg-cnt{width:58px; text-align:center; padding:7px 4px; border-radius:10px; border:1.5px solid rgba(106,111,224,.3); background:#fff; font-family:inherit; font-size:14px; font-weight:800; color:var(--text);}
+    .gg-prz{flex:1; min-width:100px; padding:7px 11px; border-radius:10px; border:1.5px solid rgba(106,111,224,.3); background:#fff; font-family:inherit; font-size:13px; font-weight:600; color:var(--text);}
+    body.dark .gg-cnt, body.dark .gg-prz{background:var(--card); border-color:rgba(170,175,250,.3);}
+    .gc-grades.lock input{opacity:.55; pointer-events:none;}
+    @media (max-width:640px){
+      .lg-res{width:64px;} .lg-res input,.lg-res .mask{font-size:11.5px; padding:8px 3px;}
+      .lg-av{width:40px; height:40px;}
+      .jb-sticks{gap:20px; padding:0 26px;} .jb-stage{padding-top:160px;} .jb-cup .jb-gob{width:50px; right:4px;} .jb-stick .cap{width:40px; height:40px; top:-23px;}
+    }
   </style>
 </head>
 <body>
@@ -80,7 +186,9 @@
 <div class="container stagger">
   <div class="ohd"><i></i><span class="dm">✦</span>MINI GAME<span class="dm">✦</span><i></i></div>
   <div class="game-tabs">
-    <button class="game-tab on" type="button">🌙 사다리타기</button>
+    <button class="game-tab on" type="button" id="tabbtn-ladder" onclick="switchGame('ladder')">🌙 사다리타기</button>
+    <button class="game-tab" type="button" id="tabbtn-lots" onclick="switchGame('lots')">✦ 제비뽑기</button>
+    <button class="game-tab" type="button" id="tabbtn-gacha" onclick="switchGame('gacha')">🔮 뽑기</button>
   </div>
 
   <div class="card" id="game-ladder">
@@ -102,7 +210,64 @@
     </div>
     <div class="lg-log" id="lg-log"></div>
   </div>
+
+  <!-- ═══ 제비뽑기 ═══ -->
+  <div class="card" id="game-lots" style="display:none">
+    <div class="lg-top">
+      <div class="jb-set">
+        <div class="lg-count">제비
+          <button type="button" onclick="jbSetN(-1)">−</button><b id="jb-n">4</b><button type="button" onclick="jbSetN(1)">+</button>
+        </div>
+        <div class="lg-count">당첨
+          <button type="button" onclick="jbSetW(-1)">−</button><b id="jb-w">1</b><button type="button" onclick="jbSetW(1)">+</button>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="lg-btn ghost" type="button" id="jb-reset" style="display:none" onclick="jbReset()">↺ 다시하기</button>
+        <button class="lg-btn ghost" type="button" id="jb-all" style="display:none" onclick="jbRevealAll()">전부 공개</button>
+        <button class="lg-btn" type="button" id="jb-start" onclick="jbStart()">✦ 시작하기</button>
+      </div>
+    </div>
+    <div class="lg-hint" id="jb-hint">제비 개수와 당첨 개수를 정하고 시작하기! 막대를 눌러 뽑아보세요 ✦</div>
+    <div class="jb-toastwrap"><div class="jb-toast" id="jb-toast"></div></div>
+    <div class="jb-stage" id="jb-stage" style="display:none">
+      <div class="jb-scene">
+        <div class="jb-sticks" id="jb-sticks"></div>
+        <div class="jb-cup"><img class="jb-gob" src="../haessal.png" alt=""></div>
+      </div>
+    </div>
+    <div class="lg-log" id="jb-log"></div>
+  </div>
+
+  <!-- ═══ 뽑기(가챠) ═══ -->
+  <div class="card" id="game-gacha" style="display:none">
+    <div class="lg-top">
+      <div class="lg-hint" style="margin:0">등급별 개수(합계 최대 50)와 당첨 품목을 적고 시작! 레버를 돌리면 뽑기알이 나와요 🔮</div>
+      <div style="display:flex; gap:8px;">
+        <button class="lg-btn ghost" type="button" id="gc-reset" style="display:none" onclick="gcReset()">↺ 다시하기</button>
+        <button class="lg-btn" type="button" id="gc-start" onclick="gcStart()">🔮 시작하기</button>
+      </div>
+    </div>
+    <div class="gc-grades" id="gc-grades">
+      <div class="gc-grade g0"><img src="../ball_n.png" alt=""><div class="gg-body"><div class="gg-name">일반</div><div class="gg-row"><input type="number" class="gg-cnt" id="gc-c0" value="4" min="0" max="50">개<input type="text" class="gg-prz" id="gc-p0" value="꽝" placeholder="품목"></div></div></div>
+      <div class="gc-grade g1"><img src="../ball_r.png" alt=""><div class="gg-body"><div class="gg-name">고급</div><div class="gg-row"><input type="number" class="gg-cnt" id="gc-c1" value="1" min="0" max="50">개<input type="text" class="gg-prz" id="gc-p1" value="스티커 세트" placeholder="품목"></div></div></div>
+      <div class="gc-grade g2"><img src="../ball_sr.png" alt=""><div class="gg-body"><div class="gg-name">희귀</div><div class="gg-row"><input type="number" class="gg-cnt" id="gc-c2" value="1" min="0" max="50">개<input type="text" class="gg-prz" id="gc-p2" value="치킨 기프티콘" placeholder="품목"></div></div></div>
+    </div>
+    <div class="lg-hint" id="gc-hint"></div>
+    <div class="gc-stage" id="gc-stage" style="display:none">
+      <div>
+        <div class="gc-machine">
+          <img class="gc-art" src="../gacha_machine.png" alt="루나의 뽑기 기계">
+          <button class="gc-knob" id="gc-knob" type="button" onclick="gcSpin()" aria-label="돌리기"></button>
+          <div class="gc-ballwrap" id="gc-ballwrap"></div>
+        </div>
+        <div class="gc-turn">↑ 레버를 눌러 돌려보세요</div>
+      </div>
+    </div>
+    <div class="lg-log" id="gc-log"></div>
+  </div>
 </div>
+
 
 <footer>© 2026 루나 Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
 
@@ -289,6 +454,194 @@ function repaint(){
   const c=$('lgCanvas').getContext('2d');
   for(let j=0;j<N;j++) if(G.done[j]){ const p=pathOf(j); strokePath(c,p.pts,p.pts.length-1,PC[j%12]); }
 }
+
+/* ═══ 탭 전환 ═══ */
+function switchGame(g){
+  $('game-ladder').style.display = g==='ladder'?'':'none';
+  $('game-lots').style.display   = g==='lots'?'':'none';
+  $('game-gacha').style.display  = g==='gacha'?'':'none';
+  $('tabbtn-ladder').classList.toggle('on', g==='ladder');
+  $('tabbtn-lots').classList.toggle('on', g==='lots');
+  $('tabbtn-gacha').classList.toggle('on', g==='gacha');
+  if(g==='ladder' && !busy) repaint();
+}
+
+/* ═══ 제비뽑기 ═══ */
+let JN=4, JW=1, jbPhase='setup', JB=null;
+function jbSetN(d){
+  if(jbPhase!=='setup') return;
+  JN=Math.min(12, Math.max(2, JN+d));
+  JW=Math.min(JW, JN-1);
+  $('jb-n').textContent=JN; $('jb-w').textContent=JW;
+}
+function jbSetW(d){
+  if(jbPhase!=='setup') return;
+  JW=Math.min(JN-1, Math.max(1, JW+d));
+  $('jb-w').textContent=JW;
+}
+function jbHint(){
+  const left=JB.results.filter((r,i)=>r==='win'&&!JB.done[i]).length;
+  const rem=JB.done.filter(d=>!d).length;
+  $('jb-hint').textContent='남은 제비 '+rem+'개 · 남은 당첨 '+left+'개 ✦';
+}
+function jbStart(){
+  if(jbPhase!=='setup') return;
+  const arr=Array(JN).fill('lose'); for(let i=0;i<JW;i++) arr[i]='win';
+  for(let i=arr.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  JB={results:arr, done:Array(JN).fill(false)};
+  jbPhase='play';
+  $('jb-start').style.display='none'; $('jb-reset').style.display=''; $('jb-all').style.display='';
+  $('jb-log').innerHTML='';
+  $('jb-stage').style.display='flex';
+  const box=$('jb-sticks'); box.innerHTML='';
+  for(let i=0;i<JN;i++){
+    const win=JB.results[i]==='win';
+    const b=document.createElement('button');
+    b.className='jb-stick'; b.type='button'; b.id='jb-stick-'+i;
+    b.style.setProperty('--rot', (Math.random()*4-2).toFixed(1)+'deg');
+    b.style.animationDelay=(i*0.05)+'s';
+    b.innerHTML='<span class="bar"></span><span class="cap"><img src="'+AV+'" alt=""></span><i class="no">'+(i+1)+'</i>'
+      +'<span class="tip '+(win?'win':'lose')+'"></span>';
+    b.onclick=()=>jbPull(i,false);
+    box.appendChild(b);
+  }
+  jbHint();
+}
+function jbPull(i, instant){
+  if(jbPhase!=='play'||!JB||JB.done[i]) return;
+  JB.done[i]=true;
+  const win=JB.results[i]==='win';
+  const st=$('jb-stick-'+i); st.onclick=null;
+  function pullOut(){
+    st.classList.add('out');
+    if(win) st.querySelector('.cap').insertAdjacentHTML('beforeend','<span class="win-b">🎁</span>');
+    if(!instant){
+      const t=$('jb-toast');
+      t.className='jb-toast show '+(win?'win':'lose');
+      t.textContent=(i+1)+'번 제비  →  '+(win?'당첨 🎁':'꽝 🌙');
+      clearTimeout(window.__jbToastT);
+      window.__jbToastT=setTimeout(()=>t.classList.remove('show'), 1700);
+    }
+    const log=document.createElement('div');
+    log.textContent=(i+1)+'번 제비  →  '+(win?'당첨 🎁':'꽝');
+    log.style.borderLeft='4.5px solid '+(win?'#E0A93B':'#A8ADEE');
+    $('jb-log').appendChild(log);
+    jbHint();
+    if(win && !instant && typeof window.fxHearts==='function'){
+      setTimeout(()=>{
+        const r=st.getBoundingClientRect();
+        window.fxHearts(r.left+r.width/2, r.bottom-30, 10);
+      }, 820);
+    }
+  }
+  if(instant){ pullOut(); return; }
+  st.classList.add('wig');
+  setTimeout(()=>{ st.classList.remove('wig'); pullOut(); }, 310);
+}
+function jbRevealAll(){
+  if(jbPhase!=='play'||!JB) return;
+  for(let i=0;i<JN;i++) jbPull(i,true);
+}
+function jbReset(){
+  jbPhase='setup'; JB=null;
+  $('jb-sticks').innerHTML=''; $('jb-log').innerHTML=''; $('jb-stage').style.display='none';
+  const _t=$('jb-toast'); if(_t) _t.classList.remove('show');
+  $('jb-start').style.display=''; $('jb-reset').style.display='none'; $('jb-all').style.display='none';
+  $('jb-hint').textContent='제비 개수와 당첨 개수를 정하고 시작하기! 막대를 눌러 뽑아보세요 ✦';
+}
+
+/* ═══ 뽑기(가챠) ═══ */
+const CAPS=[
+  {full:'../ball_n.png',  top:'../ball_n_top.png',  bot:'../ball_n_bot.png',  w:320, h:325},
+  {full:'../ball_r.png',  top:'../ball_r_top.png',  bot:'../ball_r_bot.png',  w:320, h:342},
+  {full:'../ball_sr.png', top:'../ball_sr_top.png', bot:'../ball_sr_bot.png', w:320, h:361}
+];
+const GNAMES=['일반','고급','희귀'];
+let gcPhase='setup', GC=null, gcBusy=false;
+function gcHint(){
+  if(!GC){ $('gc-hint').textContent=''; return; }
+  const c=[0,0,0]; GC.pool.forEach(g=>c[g]++);
+  $('gc-hint').textContent='남은 뽑기알 '+GC.pool.length+'개 (일반 '+c[0]+' · 고급 '+c[1]+' · 희귀 '+c[2]+') — 레버를 돌려보세요!';
+}
+function gcStart(){
+  if(gcPhase!=='setup') return;
+  const cnt=[0,1,2].map(i=>Math.max(0, Math.min(50, parseInt($('gc-c'+i).value)||0)));
+  const total=cnt[0]+cnt[1]+cnt[2];
+  if(total<1){ $('gc-hint').textContent='❗ 뽑기알을 1개 이상 넣어주세요'; return; }
+  if(total>50){ $('gc-hint').textContent='❗ 합계는 최대 50개까지예요'; return; }
+  const prizes=[0,1,2].map(i=>($('gc-p'+i).value.trim() || (i===0?'꽝':'당첨 🎁')));
+  const pool=[];
+  cnt.forEach((n,g)=>{ for(let k=0;k<n;k++) pool.push(g); });
+  for(let i=pool.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  GC={pool, prizes, drawn:0};
+  gcPhase='play'; gcBusy=false;
+  $('gc-grades').classList.add('lock');
+  $('gc-start').style.display='none'; $('gc-reset').style.display='';
+  $('gc-log').innerHTML=''; $('gc-stage').style.display='flex';
+  const k=$('gc-knob'); if(k) k.disabled=false;
+  gcHint();
+}
+function gcReset(){
+  gcPhase='setup'; GC=null; gcBusy=false;
+  $('gc-grades').classList.remove('lock');
+  $('gc-stage').style.display='none'; $('gc-ballwrap').innerHTML='';
+  $('gc-start').style.display=''; $('gc-reset').style.display='none';
+  $('gc-log').innerHTML=''; $('gc-hint').textContent='';
+  const k=$('gc-knob'); if(k) k.disabled=false;
+}
+function gcSpin(){
+  if(gcPhase!=='play'||!GC||gcBusy||!GC.pool.length) return;
+  gcBusy=true;
+  $('gc-ballwrap').innerHTML='';
+  const gr=GC.pool.pop();
+  GC.drawn++;
+  const design=CAPS[gr];
+  const label=GC.prizes[gr].replace(/</g,'&lt;');
+  const knob=$('gc-knob'); knob.classList.remove('spin'); void knob.offsetWidth; knob.classList.add('spin');
+  const mach=document.querySelector('.gc-machine'); mach.classList.remove('shake'); void mach.offsetWidth; mach.classList.add('shake');
+  setTimeout(()=>{
+    const wrap=$('gc-ballwrap');
+    const ball=document.createElement('div');
+    ball.className='gc-ball pop';
+    ball.innerHTML='<img class="full" src="'+design.full+'" width="100%" alt="">';
+    wrap.appendChild(ball);
+    setTimeout(()=>{
+      ball.classList.remove('pop'); ball.classList.add('grow');
+      ball.style.transform='translateX(-50%) translateY(34px) scale(.9)';
+      requestAnimationFrame(()=>{
+        const st=$('gc-stage').getBoundingClientRect();
+        ball.style.left='50%'; ball.style.bottom=Math.round(st.height*0.32)+'px';
+        ball.style.width='190px';
+        ball.style.transform='translateX(-50%) translateY(0) scale(1)';
+      });
+      setTimeout(()=>{
+        const ratio=design.h/design.w;
+        ball.innerHTML=
+          '<div style="position:relative; width:100%; padding-top:'+(ratio*100)+'%;">'
+          +'<img class="half h-top" src="'+design.top+'" alt="">'
+          +'<img class="half h-bot" src="'+design.bot+'" alt="">'
+          +'<div class="prize g'+gr+'"><span class="pt">'+label+'</span></div>'
+          +'</div>';
+        requestAnimationFrame(()=>requestAnimationFrame(()=>ball.classList.add('open')));
+        const log=document.createElement('div');
+        log.textContent=GC.drawn+'번째 뽑기  →  ['+GNAMES[gr]+'] '+GC.prizes[gr];
+        log.style.borderLeft='4.5px solid '+(gr===2?'#E0A93B':gr===1?'#6A6FE0':'#A8ADEE');
+        $('gc-log').appendChild(log);
+        gcHint();
+        if(!GC.pool.length){ $('gc-hint').textContent='뽑기알을 전부 뽑았어요! ↺ 다시하기로 새 판 ✦'; $('gc-knob').disabled=true; }
+        if(gr>0 && typeof window.fxHearts==='function'){
+          setTimeout(()=>{
+            const r=ball.getBoundingClientRect();
+            window.fxHearts(r.left+r.width/2, r.top+r.height/2, gr===2?12:7);
+          }, 550);
+        }
+        ball.onclick=()=>{ ball.remove(); };
+        setTimeout(()=>{ gcBusy=false; }, 900);
+      }, 850);
+    }, 720);
+  }, 620);
+}
+
 window.addEventListener('resize', ()=>{ if(!busy) repaint(); });
 document.addEventListener('DOMContentLoaded', ()=>{
   document.body.classList.add('ready');
