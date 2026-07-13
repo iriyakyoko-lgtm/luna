@@ -246,10 +246,10 @@
       .sbtn:hover { background:var(--main); color:#fff; border-color:var(--main); }
       .sbtn.reset { color:#cf5b5b; }
       .sbtn.reset:hover { background:#cf5b5b; border-color:#cf5b5b; color:#fff; }
-      .mini-board { display:grid; grid-template-columns:repeat(20,1fr); gap:3px; margin-top:6px; }
+      .mini-board { display:grid; grid-template-columns:repeat(10,1fr); gap:4px; margin-top:6px; }
       .mini { aspect-ratio:1/1; border-radius:50%; background:#EDEDFA; border:1px solid var(--main-light); }
       .mini.on { background:var(--main); border-color:var(--main); }
-      .mini.tenth { box-shadow:0 0 0 2px rgba(255,200,90,.55); }
+      .mini.gift { box-shadow:0 0 0 2px rgba(255,200,90,.75); }
       .rw-hint { font-size:12px; color:var(--text-soft); margin-top:10px; line-height:1.7; }
       .rw-hint b { color:var(--main-dark); }
       .srow { display:flex; align-items:center; gap:8px; padding:11px 14px; background:#fff; border:1px solid var(--main-light); border-radius:12px; margin-bottom:8px; }
@@ -257,6 +257,21 @@
       .srow .sid { font-size:12px; color:var(--text-soft); }
       .srow .sc { font-size:12px; font-weight:800; color:var(--main-dark); background:var(--main-light); border-radius:999px; padding:3px 10px; }
     </style>
+
+    <!-- 🎁 보상 목록 (스탬프판 좌측 + 🎁칸 툴팁에 동시 반영) -->
+    <div class="card">
+      <div class="card-title">🎁 보상 목록 · 칸 수</div>
+      <div class="input-hint" style="margin-bottom:10px">한 줄에 <b>개수|보상</b> 형식으로 적어요. 예: <b>5|움짤 프사</b><br>여기서 고치면 스탬프판 왼쪽 목록과 판 위의 🎁칸이 같이 바뀝니다.</div>
+      <div class="form-field">
+        <label class="input-label">전체 칸 수 (10칸 = 1줄)</label>
+        <input class="input" id="f-stamp-total" type="number" min="10" max="200" step="10" placeholder="30">
+      </div>
+      <div class="form-field">
+        <label class="input-label">보상 목록</label>
+        <textarea class="input" id="f-stamp-rewards" rows="7" placeholder="5|움짤 프사&#10;10|방셀&#10;15|배너 1 (옷 선택 가능)&#10;20|하단 배너 6단 (옷 선택 가능)&#10;30|일러스트 상단 배너"></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="saveStampConfig()">저장 ♥</button></div>
+    </div>
 
     <!-- 스탬프 명단 추가 (업보 시청자와 별개로 관리) -->
     <div class="card">
@@ -290,8 +305,8 @@
       </div>
       <div class="form-grid">
         <div class="form-field">
-          <label class="input-label">직접 입력 (0~100)</label>
-          <input class="input" id="stamp-input" type="number" min="0" max="100" value="0">
+          <label class="input-label">직접 입력</label>
+          <input class="input" id="stamp-input" type="number" min="0" max="200" value="0">
         </div>
       </div>
       <div class="mini-board" id="stamp-mini"></div>
@@ -494,6 +509,7 @@
     'tmi-item','tmi-game','tmi-song','tmi-genre',
     'fan-char','fan-desc','fan-traits',
     'link-soop','link-youtube','link-fancim','link-cafe',
+    'stamp-total','stamp-rewards',
     'main-story','main-art'
   ];
 
@@ -733,8 +749,33 @@
   /* ===== ☀️ 스탬프 ===== */
   /* 스탬프 명단은 업보 시청자와 별개 — stamps 테이블이 닉네임/아이디/개수를 직접 가짐 */
   let stamps = [], stampCur = null, stampVal = 0;
+  let STAMP_REWARDS = [[5,'움짤 프사'],[10,'방셀'],[15,'배너 1 (옷 선택 가능)'],[20,'하단 배너 6단 (옷 선택 가능)'],[30,'일러스트 상단 배너']];
+  let STAMP_TOTAL = 30;
+
+  function parseStampConfig(saved){
+    const t = parseInt(saved['stamp-total']);
+    if(t && t>0) STAMP_TOTAL = Math.min(200, t);
+    const raw = (saved['stamp-rewards']||'').trim();
+    if(raw){
+      const list = raw.split(/\n+/).map(l=>{
+        const m=l.split('|'); const at=parseInt((m[0]||'').trim()); const tx=(m[1]||'').trim();
+        return (at>0 && tx) ? [at,tx] : null;
+      }).filter(Boolean).sort((a,b)=>a[0]-b[0]);
+      if(list.length) STAMP_REWARDS = list;
+    }
+  }
+  async function saveStampConfig(){
+    await saveLocalProfile();
+    const { data: rows } = await db.from('profile').select('data').eq('id', 1);
+    parseStampConfig((rows && rows[0] && rows[0].data) || {});
+    if(stampCur) refreshStamp();
+  }
 
   async function loadStamp(){
+    try{
+      const { data: rows } = await db.from('profile').select('data').eq('id', 1);
+      parseStampConfig((rows && rows[0] && rows[0].data) || {});
+    }catch(e){}
     stamps = await fetchAll('stamps', { order:'sort_order', asc:true }) || [];
     renderStampPick(); renderStampList();
     if(stampCur && stamps.some(s=>String(s.id)===String(stampCur))) openStamp(stampCur);
@@ -806,23 +847,26 @@
     renderStampPick();
     refreshStamp();
   }
-  function bumpStamp(d){ stampVal = Math.min(100, Math.max(0, stampVal + d)); refreshStamp(); }
+  function bumpStamp(d){ stampVal = Math.min(STAMP_TOTAL, Math.max(0, stampVal + d)); refreshStamp(); }
   function resetStamp(){ if(!confirm('0으로 초기화할까요? (저장을 눌러야 반영돼요)')) return; stampVal = 0; refreshStamp(); }
   function refreshStamp(){
     document.getElementById('stamp-count').textContent = stampVal;
     const inp = document.getElementById('stamp-input'); inp.value = stampVal;
-    inp.oninput = () => { stampVal = Math.min(100, Math.max(0, parseInt(inp.value||'0',10) || 0)); document.getElementById('stamp-count').textContent = stampVal; drawMini(); drawHint(); };
+    inp.oninput = () => { stampVal = Math.min(STAMP_TOTAL, Math.max(0, parseInt(inp.value||'0',10) || 0)); document.getElementById('stamp-count').textContent = stampVal; drawMini(); drawHint(); };
     drawMini(); drawHint();
   }
   function drawMini(){
+    const gifts = STAMP_REWARDS.map(r=>r[0]);
     let h = '';
-    for(let i=1;i<=100;i++) h += `<div class="mini ${i<=stampVal?'on':''} ${i%10===0?'tenth':''}" title="${i}"></div>`;
+    for(let i=1;i<=STAMP_TOTAL;i++) h += `<div class="mini ${i<=stampVal?'on':''} ${gifts.includes(i)?'gift':''}" title="${i}"></div>`;
     document.getElementById('stamp-mini').innerHTML = h;
   }
   function drawHint(){
-    document.getElementById('stamp-hint').innerHTML = stampVal >= 100
-      ? `<b>100개 완주!</b> 🎉`
-      : `현재 <b>${stampVal}개</b> · 100개까지 <span style="color:var(--main)">${100-stampVal}개 남음</span>`;
+    const next = STAMP_REWARDS.find(r => stampVal < r[0]);
+    const done = STAMP_REWARDS.filter(r => stampVal >= r[0]).map(r=>r[0]);
+    document.getElementById('stamp-hint').innerHTML = next
+      ? `다음 보상 <b>${next[0]}개</b> — ${next[1]} <span style="color:var(--main)">(${next[0]-stampVal}개 남음)</span>${done.length?`<br>달성: ${done.join('·')}개`:''}`
+      : `<b>보상 전부 달성!</b> 🎉`;
   }
   async function saveStamp(){
     if(!stampCur) return;
