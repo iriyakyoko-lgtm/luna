@@ -140,10 +140,10 @@ body.ready .wrap{opacity:1}
 .d-grid{display:grid; grid-template-columns:250px 1fr; gap:clamp(18px,2.2vw,32px); align-items:center}
 .d-box{position:relative; text-align:center; height:100%; display:flex; flex-direction:column;
   align-items:center; justify-content:center; gap:16px}
-.d-box .front{height:240px; filter:drop-shadow(0 10px 18px rgba(106,111,224,.18)); cursor:pointer}
+.d-box .front{height:240px; background:none; filter:drop-shadow(0 10px 18px rgba(106,111,224,.18)); cursor:pointer}
 .d-box .pal-img{display:block; width:min(82%,300px)}
-.d-name{font-family:'Italiana',serif; font-size:clamp(24px,2.2vw,32px); letter-spacing:.12em; color:var(--main-dark); -webkit-text-stroke:.5px var(--main-dark); paint-order:stroke fill}
-.d-name .kr{font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:800; color:var(--ink); margin-left:10px; letter-spacing:0}
+.d-name{font-family:'Italiana',serif; font-size:clamp(24px,2.2vw,32px); letter-spacing:.12em; color:var(--main-dark); white-space:nowrap; -webkit-text-stroke:.5px var(--main-dark); paint-order:stroke fill}
+.d-name .kr{display:block; font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:800; color:var(--ink); margin:2px 0 0; letter-spacing:0; -webkit-text-stroke:0}
 .d-intro{margin-top:8px; font-size:13px; line-height:1.9; font-weight:500; color:var(--text-soft); word-break:keep-all}
 .d-traits{margin-top:12px; list-style:none}
 .d-traits li{position:relative; padding:7px 0 7px 24px; font-size:12.5px; line-height:1.75; font-weight:600; word-break:keep-all}
@@ -241,7 +241,7 @@ footer{text-align:center; color:var(--text-soft); font-size:12px; line-height:1.
     <a href="../dress/">옷장</a>
     <a href="../work/">업보</a>
     <a href="../stamp/">스탬프</a>
-    <a href="../ladder/">사다리</a>
+    <a href="../minigame/">미니게임</a>
     <button class="theme-switch" id="themeSwitch" type="button" aria-label="다크모드"><span class="knob" id="themeKnob">🌙</span></button>
   </div>
  </div>
