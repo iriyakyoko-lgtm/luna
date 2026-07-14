@@ -266,7 +266,7 @@ footer{text-align:center; color:var(--text-soft); font-size:12px; line-height:1.
         <div class="igrid">
           <div class="irow"><span class="k">생일</span><span class="sp"></span><span class="v"><span class="dbadge" id="birthBadge" style="display:none"></span><span data-hook="info-birth">08.22</span></span></div>
           <div class="irow"><span class="k">데뷔</span><span class="sp"></span><span class="v"><span class="dbadge" id="debutBadge"></span><span data-hook="info-debut">2025.12.13</span></span></div>
-          <div class="irow"><span class="k">성별</span><span class="sp"></span><span class="v" data-hook="info-gender">여</span></div>
+          <div class="irow"><span class="k">MBTI</span><span class="sp"></span><span class="v" data-hook="info-mbti">ISTP</span></div>
           <div class="irow"><span class="k">팬닉</span><span class="sp"></span><span class="v" data-hook="info-fandom">햇살이</span></div>
           <div class="irow"><span class="k">콘텐츠</span><span class="sp"></span><span class="v" data-hook="info-content">소통 · 종겜 · 노래</span></div>
           <div class="irow"><span class="k">태그</span><span class="sp"></span><span class="v" data-hook="info-tags">#루나 #햇살이 #달 #밤하늘</span></div>
@@ -307,7 +307,7 @@ footer{text-align:center; color:var(--text-soft); font-size:12px; line-height:1.
 
   <!-- 팬캐릭터 · 햇살이 -->
   <div class="card a-dal">
-    <div class="sec-h"><span class="en">HAESSAL</span><span class="kr">팬캐릭터 · 햇살이 · OO♩ or [햇살]OO</span><span class="em"></span></div>
+    <div class="sec-h"><span class="en">HAESSAL</span><span class="kr">팬캐릭터 · 햇살이</span><span class="em">☀️</span></div>
     <div class="d-grid">
       <div class="d-box">
         <img class="front" id="haessal" data-hook-img="fan-char" src="../haessal.gif" alt="햇살이">
@@ -436,7 +436,7 @@ setTimeout(function(){document.body.classList.add('ready')},1200);
     const { data: rows } = await db.from('profile').select('data').eq('id', 1);
     const d = (rows && rows[0] && rows[0].data) || {};
     const set = (k) => { const v=(d[k]||'').trim(); if(v) document.querySelectorAll('[data-hook="'+k+'"]').forEach(e=>e.textContent=v); };
-    ['info-name','info-catchphrase','info-birth','info-debut','info-gender','info-fandom','info-content','info-tags','msg','fan-desc','like1','like2','like3','dislike1','dislike2','tmi-item','tmi-game','tmi-song','tmi-genre','info-en','quote','rules-lead'].forEach(set);
+    ['info-name','info-catchphrase','info-birth','info-debut','info-mbti','info-fandom','info-content','info-tags','msg','fan-desc','like1','like2','like3','dislike1','dislike2','tmi-item','tmi-game','tmi-song','tmi-genre','info-en','quote','rules-lead'].forEach(set);
 
     /* 채팅 규칙 (한 줄 = 한 규칙) */
     const escH=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
