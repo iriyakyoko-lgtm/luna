@@ -157,7 +157,7 @@ var FX_TRANS_MS    = 800;    // 커지는 등장 길이(ms). 더 느리게 = 숫
     if (FX_TILT && mqFine && !mqReduce && !window.__fxTiltOn) {
       window.__fxTiltOn = true;
       var TILT_SEL = '.card, .item-card, .viewer-card, .notice-item, .up-item, .vod-ph';
-      var TILT_DEG = 2.5;                                   /* 감도 (기존 5) */
+      var TILT_DEG = 1.25;                                  /* 감도 (절반으로 낮춤) */
       var _tiltEl = null;
       document.addEventListener('mousemove', function (e) {
         var card = e.target.closest ? e.target.closest(TILT_SEL) : null;
