@@ -261,7 +261,7 @@
     <!-- 🎁 보상 목록 (스탬프판 좌측 + 🎁칸 툴팁에 동시 반영) -->
     <div class="card">
       <div class="card-title">🎁 보상 목록 · 칸 수</div>
-      <div class="input-hint" style="margin-bottom:10px">한 줄에 <b>개수|보상</b> 형식으로 적어요. 예: <b>5|움짤 프사</b><br>여기서 고치면 스탬프판 왼쪽 목록과 판 위의 🎁칸이 같이 바뀝니다.</div>
+      <div class="input-hint" style="margin-bottom:10px">한 줄에 <b>개수 보상</b> 순서로 적어요. 예: <b>5 움짤 프사</b> · <b>5|움짤 프사</b> 둘 다 OK.<br>(숫자와 보상 사이는 공백·<b>|</b>·<b>:</b> 아무거나. 숫자 없는 줄은 무시)<br>여기서 고치면 스탬프판 왼쪽 목록이 같이 바뀝니다.</div>
       <div class="form-field">
         <label class="input-label">전체 칸 수 (10칸 = 1줄 · 기본 100)</label>
         <input class="input" id="f-stamp-total" type="number" min="10" max="200" step="10" placeholder="100">
@@ -757,8 +757,11 @@
     if(t && t>0) STAMP_TOTAL = Math.min(200, t);
     const raw = (saved['stamp-rewards']||'').trim();
     if(raw){
-      const list = raw.split(/\n+/).map(l=>{
-        const m=l.split('|'); const at=parseInt((m[0]||'').trim()); const tx=(m[1]||'').trim();
+      const list = raw.split(/\n+/).map(line=>{
+        const l=line.trim();
+        const m=l.match(/^(\d{1,3})\s*[|｜／\/」ㅣ:：\-~\t ]+\s*(.+)$/);
+        if(!m) return null;
+        const at=parseInt(m[1],10), tx=m[2].trim();
         return (at>0 && tx) ? [at,tx] : null;
       }).filter(Boolean).sort((a,b)=>a[0]-b[0]);
       if(list.length) STAMP_REWARDS = list;
